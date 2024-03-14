@@ -42,6 +42,7 @@ fn main() {
                     mirror_url: None,
                     destiny: dst,
                     no_owner: Some(no_owner),
+                    git_config: None,
                 },
             };
             // dbg!(&clone_config);

@@ -17,12 +17,7 @@ pub fn clone(url: &str, config: CloneConfig) {
     };
     let repo_url = mirror_url + &repo.to_string() + ".git";
 
-    let no_owner = match config.no_owner {
-        Some(n) => n,
-        None => false,
-    };
-
-    let local_dir = if no_owner {
+    let local_dir = if config.no_owner.unwrap_or(false) {
         repo.repo
     } else {
         repo.to_string()
@@ -33,10 +28,12 @@ pub fn clone(url: &str, config: CloneConfig) {
         None => Path::new(&local_dir).to_path_buf(),
     };
 
-    let _ = Command::new("git")
-        .arg("clone")
-        .arg(repo_url)
-        .arg(local_dst)
-        .arg("--depth=1")
-        .status();
+    let mut cmd = &mut Command::new("git");
+    cmd = cmd.arg("clone").arg(repo_url).arg(local_dst);
+
+    if let Some(git_config) = config.git_config {
+        cmd = cmd.args(git_config);
+    }
+
+    let _ = cmd.status();
 }
