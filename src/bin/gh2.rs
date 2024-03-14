@@ -3,6 +3,13 @@ use gh2::cmd;
 use gh2::config;
 
 #[derive(Parser)]
+#[clap(
+    name = "gh2",
+    version,
+    author,
+    about = "gh complement",
+    long_about = None,
+)]
 enum Cli {
     /// wrapper of `git clone`
     #[clap(aliases=["c","cl"])]
