@@ -2,7 +2,7 @@ use std::path::Path;
 use std::process::Command;
 
 use crate::config::CloneConfig;
-use crate::parse_url;
+use crate::parser::parse_url;
 
 // const HTTP_URL: &str = "https://github.com/";
 const SSH_URL: &str = "git@github.com:";

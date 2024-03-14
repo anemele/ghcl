@@ -1,7 +1,7 @@
 use std::fs;
 
 use super::segs::Config;
-use crate::get_rc_path;
+use crate::consts::get_rc_path;
 use toml;
 
 pub fn read_config() -> Option<Config> {
