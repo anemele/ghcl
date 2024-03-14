@@ -3,7 +3,9 @@ use std::process::Command;
 
 use crate::config::CloneConfig;
 use crate::parse_url;
-use crate::SSH_URL;
+
+// const HTTP_URL: &str = "https://github.com/";
+const SSH_URL: &str = "git@github.com:";
 
 pub fn clone(url: &str, config: CloneConfig) {
     let Some(repo) = parse_url(url) else {
