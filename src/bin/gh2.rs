@@ -27,7 +27,13 @@ enum Cli {
 
     /// download releases from GitHub
     #[clap(aliases=["d","dl"])]
-    Download { url: String },
+    Download {
+        url: String,
+
+        /// destiny to download files
+        #[arg(short, long)]
+        dst: Option<String>,
+    },
 }
 
 fn main() {
@@ -64,9 +70,14 @@ fn main() {
             cmd::clone(&url, clone_config)
         }
 
-        Cli::Download { url } => {
+        Cli::Download { url, dst } => {
             let download_config = match gh2_config.download {
-                Some(c) => c,
+                Some(mut c) => {
+                    if dst.is_some() {
+                        c.destiny = dst;
+                    }
+                    c
+                }
                 None => config::DownloadConfig {
                     mirror_urls: None,
                     destiny: None,
