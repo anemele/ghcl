@@ -83,7 +83,7 @@ fn main() {
                     destiny: None,
                 },
             };
-            dbg!(&download_config);
+            // dbg!(&download_config);
 
             cmd::download(&url, download_config)
         }

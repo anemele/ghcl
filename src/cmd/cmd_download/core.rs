@@ -1,17 +1,27 @@
-use crate::cmd::cmd_download::req::get_releases;
+use super::req::download_asset;
+use super::req::get_releases;
 use crate::config::DownloadConfig;
 use crate::parser::parse_url;
 
 pub fn download(url: &str, config: DownloadConfig) {
-    dbg!(&config);
+    // dbg!(&config);
+    let dst = config.destiny.unwrap_or(".".to_string());
 
     let Some(repo) = parse_url(url) else {
         eprintln!("Invalid url: {}", url);
         return;
     };
-    let Some(releases) = get_releases(repo) else {
+    let Some(releases) = get_releases(&repo) else {
         return;
     };
 
-    dbg!(&releases);
+    // dbg!(&releases);
+    // for release in releases {
+    //     let assets = release.get_asset_item_list();
+    //     dbg!(&assets);
+    // }
+    let asset = &releases[0].get_asset_item_list()[0];
+    if let Some(pth) = download_asset(&repo, asset, &dst) {
+        println!("Downloaded {}", pth.display())
+    }
 }
