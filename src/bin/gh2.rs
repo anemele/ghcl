@@ -38,7 +38,7 @@ enum Cli {
 
 fn main() {
     let gh2_config = config::read_config();
-    dbg!(&gh2_config);
+    // dbg!(&gh2_config);
 
     match Cli::parse() {
         Cli::Clone { url, dst, no_owner } => {
@@ -61,27 +61,29 @@ fn main() {
                     git_config: None,
                 },
             };
-            dbg!(&clone_config);
+            // dbg!(&clone_config);
 
             cmd::clone(&url, clone_config)
         }
 
-        Cli::Download { url, dst } => {
-            let download_config = match gh2_config.download {
-                Some(mut c) => {
-                    if dst.is_some() {
-                        c.destiny = dst;
-                    }
-                    c
-                }
-                None => config::DownloadConfig {
-                    mirror_urls: None,
-                    destiny: dst,
-                },
-            };
-            // dbg!(&download_config);
+        Cli::Download { url: _, dst: _ } => {
+            println!("Not Implemented Yet");
 
-            cmd::download(&url, download_config)
+            // let download_config = match gh2_config.download {
+            //     Some(mut c) => {
+            //         if dst.is_some() {
+            //             c.destiny = dst;
+            //         }
+            //         c
+            //     }
+            //     None => config::DownloadConfig {
+            //         mirror_urls: None,
+            //         destiny: dst,
+            //     },
+            // };
+            // // dbg!(&download_config);
+
+            // cmd::download(&url, download_config)
         }
     }
 }
