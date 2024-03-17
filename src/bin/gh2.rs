@@ -37,14 +37,8 @@ enum Cli {
 }
 
 fn main() {
-    let gh2_config = match config::read_config() {
-        Some(c) => c,
-        None => config::Config {
-            clone: None,
-            download: None,
-        },
-    };
-    // dbg!(&gh2_config);
+    let gh2_config = config::read_config();
+    dbg!(&gh2_config);
 
     match Cli::parse() {
         Cli::Clone { url, dst, no_owner } => {
@@ -53,9 +47,11 @@ fn main() {
                     if dst.is_some() {
                         c.destiny = dst;
                     }
-                    if c.no_owner.is_none() {
-                        c.no_owner = Some(no_owner);
-                    };
+                    if let Some(n) = c.no_owner {
+                        c.no_owner = Some(no_owner || n);
+                    } else {
+                        c.no_owner = Some(no_owner)
+                    }
                     c
                 }
                 None => config::CloneConfig {
@@ -65,7 +61,7 @@ fn main() {
                     git_config: None,
                 },
             };
-            // dbg!(&clone_config);
+            dbg!(&clone_config);
 
             cmd::clone(&url, clone_config)
         }
@@ -80,7 +76,7 @@ fn main() {
                 }
                 None => config::DownloadConfig {
                     mirror_urls: None,
-                    destiny: None,
+                    destiny: dst,
                 },
             };
             // dbg!(&download_config);

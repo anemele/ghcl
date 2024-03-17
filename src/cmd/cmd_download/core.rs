@@ -5,7 +5,6 @@ use crate::parser::parse_url;
 
 pub fn download(url: &str, config: DownloadConfig) {
     // dbg!(&config);
-    let dst = config.destiny.unwrap_or(".".to_string());
 
     let Some(repo) = parse_url(url) else {
         eprintln!("Invalid url: {}", url);
@@ -21,7 +20,7 @@ pub fn download(url: &str, config: DownloadConfig) {
     //     dbg!(&assets);
     // }
     let asset = &releases[0].get_asset_item_list()[0];
-    if let Some(pth) = download_asset(&repo, asset, &dst) {
+    if let Some(pth) = download_asset(&repo, asset, &config.destiny.unwrap()) {
         println!("Downloaded {}", pth.display())
     }
 }
