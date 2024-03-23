@@ -1,12 +1,7 @@
-use std::{
-    fs,
-    path::{Path, PathBuf},
-};
-
-use crate::parser::Repo;
-
 use super::rest::{AssetItem, Releases};
-use reqwest::blocking::Client;
+use crate::parser::Repo;
+use std::fs;
+use std::path::{Path, PathBuf};
 
 fn api_releases(repo: &Repo) -> String {
     format!("https://api.github.com/repos/{}/releases", repo)
@@ -18,10 +13,10 @@ fn api_releases(repo: &Repo) -> String {
 
 pub fn get_releases(repo: &Repo) -> Option<Releases> {
     let url = api_releases(repo);
-    let Ok(res) = Client::new().get(url).header("User-Agent", "gh2").send() else {
+    let Ok(res) = tinyget::get(url).with_header("User-Agent", "gh2").send() else {
         return None;
     };
-    let Ok(releases) = res.json::<Releases>() else {
+    let Ok(releases) = serde_json::from_slice(res.as_bytes()) else {
         return None;
     };
 
@@ -33,15 +28,12 @@ where
     P: AsRef<Path>,
 {
     let url = format!("https://github.com/{}/releases/download/{}", repo, asset);
-    let Ok(res) = Client::new().get(url).header("User-Agent", "gh2").send() else {
-        return None;
-    };
-    let Ok(bytes) = res.bytes() else {
+    let Ok(res) = tinyget::get(url).with_header("User-Agent", "gh2").send() else {
         return None;
     };
 
     let dst = dst.as_ref().join(&asset.asset);
-    if fs::write(&dst, bytes).is_ok() {
+    if fs::write(&dst, res.as_bytes()).is_ok() {
         Some(dst)
     } else {
         None

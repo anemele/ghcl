@@ -24,16 +24,15 @@ enum Cli {
         #[arg(long)]
         no_owner: bool,
     },
+    // /// download releases from GitHub
+    // #[clap(aliases=["d","dl"])]
+    // Download {
+    //     url: String,
 
-    /// download releases from GitHub
-    #[clap(aliases=["d","dl"])]
-    Download {
-        url: String,
-
-        /// destiny to download files
-        #[arg(short, long)]
-        dst: Option<String>,
-    },
+    //     /// destiny to download files
+    //     #[arg(short, long)]
+    //     dst: Option<String>,
+    // },
 }
 
 fn main() {
@@ -64,26 +63,22 @@ fn main() {
             // dbg!(&clone_config);
 
             cmd::clone(&url, clone_config)
-        }
+        } // Cli::Download { url: _, dst: _ } => {
+          //     let download_config = match gh2_config.download {
+          //         Some(mut c) => {
+          //             if dst.is_some() {
+          //                 c.destiny = dst;
+          //             }
+          //             c
+          //         }
+          //         None => config::DownloadConfig {
+          //             mirror_urls: None,
+          //             destiny: dst,
+          //         },
+          //     };
+          //     // dbg!(&download_config);
 
-        Cli::Download { url: _, dst: _ } => {
-            println!("Not Implemented Yet");
-
-            // let download_config = match gh2_config.download {
-            //     Some(mut c) => {
-            //         if dst.is_some() {
-            //             c.destiny = dst;
-            //         }
-            //         c
-            //     }
-            //     None => config::DownloadConfig {
-            //         mirror_urls: None,
-            //         destiny: dst,
-            //     },
-            // };
-            // // dbg!(&download_config);
-
-            // cmd::download(&url, download_config)
-        }
+          //     cmd::download(&url, download_config)
+          // }
     }
 }
