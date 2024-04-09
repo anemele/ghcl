@@ -1,39 +1,7 @@
 use clap::Parser;
+use gh2::cli::{Cli, ConfigSubCmd};
 use gh2::cmd;
 use gh2::config;
-
-#[derive(Parser)]
-#[clap(
-    name = "gh2",
-    version,
-    author,
-    about = "gh complement",
-    long_about = None,
-)]
-enum Cli {
-    /// wrapper of `git clone`
-    #[clap(aliases=["c","cl"])]
-    Clone {
-        url: String,
-
-        /// destiny to clone a repository
-        #[arg(short, long)]
-        dst: Option<String>,
-
-        /// whether to create a directory of the owner
-        #[arg(long)]
-        no_owner: bool,
-    },
-    // /// download releases from GitHub
-    // #[clap(aliases=["d","dl"])]
-    // Download {
-    //     url: String,
-
-    //     /// destiny to download files
-    //     #[arg(short, long)]
-    //     dst: Option<String>,
-    // },
-}
 
 fn main() {
     let gh2_config = config::read_config();
@@ -63,22 +31,37 @@ fn main() {
             // dbg!(&clone_config);
 
             cmd::clone(&url, clone_config)
-        } // Cli::Download { url: _, dst: _ } => {
-          //     let download_config = match gh2_config.download {
-          //         Some(mut c) => {
-          //             if dst.is_some() {
-          //                 c.destiny = dst;
-          //             }
-          //             c
-          //         }
-          //         None => config::DownloadConfig {
-          //             mirror_urls: None,
-          //             destiny: dst,
-          //         },
-          //     };
-          //     // dbg!(&download_config);
+        }
 
-          //     cmd::download(&url, download_config)
-          // }
+        Cli::Download { url, dst } => {
+            let download_config = match gh2_config.download {
+                Some(mut c) => {
+                    if dst.is_some() {
+                        c.destiny = dst;
+                    }
+                    c
+                }
+                None => config::DownloadConfig {
+                    mirror_urls: None,
+                    destiny: dst,
+                },
+            };
+            // dbg!(&download_config);
+
+            cmd::download(&url, download_config)
+        }
+
+        Cli::ConfigSubCmd(subcmd) => match subcmd {
+            ConfigSubCmd::List => {}
+            ConfigSubCmd::Get { key } => {
+                dbg!(key);
+            }
+            ConfigSubCmd::Set { key, value } => {
+                dbg!(key, value);
+            }
+            ConfigSubCmd::Unset { key } => {
+                dbg!(key);
+            }
+        },
     }
 }
