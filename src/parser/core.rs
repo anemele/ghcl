@@ -18,6 +18,7 @@ const PATTERN2: &str = r"^([\w-]+)/([\w\.-]+)";
 pub fn parse_url(url: &str) -> Option<Repo> {
     let mut url = url;
 
+    // here use unwrap because it depends on the developer
     let ptn1 = Regex::new(PATTERN1).unwrap();
     if let Some(m) = ptn1.find(url) {
         url = &url[m.end()..];
@@ -27,6 +28,7 @@ pub fn parse_url(url: &str) -> Option<Repo> {
         url = u
     };
 
+    // use unwrap like above
     let ptn2 = Regex::new(PATTERN2).unwrap();
     let Some(c) = ptn2.captures(url) else {
         return None;

@@ -20,7 +20,7 @@ pub fn download(url: &str, config: DownloadConfig) {
     //     dbg!(&assets);
     // }
     let asset = &releases[0].get_asset_item_list()[0];
-    if let Some(pth) = download_asset(&repo, asset, &config.destiny.unwrap()) {
+    if let Some(pth) = download_asset(&repo, asset, &config.destiny.unwrap_or_default()) {
         println!("Downloaded {}", pth.display())
     }
 }
