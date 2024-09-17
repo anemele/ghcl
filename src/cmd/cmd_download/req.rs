@@ -11,31 +11,22 @@ fn api_releases(repo: &Repo) -> String {
 //     format!("https://github.com/{}/releases/download/{}")
 // }
 
-pub fn get_releases(repo: &Repo) -> Option<Releases> {
+pub fn get_releases(repo: &Repo) -> anyhow::Result<Releases> {
     let url = api_releases(repo);
-    let Ok(res) = tinyget::get(url).with_header("User-Agent", "gh2").send() else {
-        return None;
-    };
-    let Ok(releases) = serde_json::from_slice(res.as_bytes()) else {
-        return None;
-    };
-
-    Some(releases)
+    let res = tinyget::get(url).with_header("User-Agent", "gh2").send()?;
+    let releases = serde_json::from_slice(res.as_bytes())?;
+    Ok(releases)
 }
 
-pub fn download_asset<P>(repo: &Repo, asset: &AssetItem, dst: P) -> Option<PathBuf>
+pub fn download_asset<P>(repo: &Repo, asset: &AssetItem, dst: P) -> anyhow::Result<PathBuf>
 where
     P: AsRef<Path>,
 {
     let url = format!("https://github.com/{}/releases/download/{}", repo, asset);
-    let Ok(res) = tinyget::get(url).with_header("User-Agent", "gh2").send() else {
-        return None;
-    };
+    let res = tinyget::get(url).with_header("User-Agent", "gh2").send()?;
 
     let dst = dst.as_ref().join(&asset.asset);
-    if fs::write(&dst, res.as_bytes()).is_ok() {
-        Some(dst)
-    } else {
-        None
-    }
+    fs::write(&dst, res.as_bytes())?;
+
+    Ok(dst)
 }

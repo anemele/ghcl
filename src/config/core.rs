@@ -4,7 +4,9 @@ use super::segs::Config;
 use crate::consts::get_rc_path;
 
 pub fn read_config() -> Config {
-    let rc_path = get_rc_path();
+    let Ok(rc_path) = get_rc_path() else {
+        return Config::default();
+    };
     // dbg!(&rc_path);
 
     if !rc_path.exists() {

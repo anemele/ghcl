@@ -4,10 +4,9 @@ use std::process::Command;
 use crate::config::CloneConfig;
 use crate::parser::parse_url;
 
-pub fn clone(url: &str, config: CloneConfig) {
+pub fn clone(url: &str, config: CloneConfig) -> anyhow::Result<()> {
     let Some(repo) = parse_url(url) else {
-        eprintln!("Invalid url: {}", url);
-        return;
+        anyhow::bail!("Invalid url: {}", url);
     };
 
     let repo_url = config.mirror_url.unwrap_or_default() + &repo.to_string() + ".git";
@@ -25,5 +24,7 @@ pub fn clone(url: &str, config: CloneConfig) {
         cmd = cmd.args(git_config);
     }
 
-    let _ = cmd.status();
+    let _ = cmd.status()?;
+
+    Ok(())
 }

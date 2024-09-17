@@ -30,22 +30,14 @@ pub fn parse_url(url: &str) -> Option<Repo> {
 
     // use unwrap like above
     let ptn2 = Regex::new(PATTERN2).unwrap();
-    let Some(c) = ptn2.captures(url) else {
-        return None;
-    };
+    let c = ptn2.captures(url)?;
 
-    let Some(owner) = c.get(1) else {
-        return None;
-    };
+    let owner = c.get(1)?;
     let owner = owner.as_str();
-    let Some(repo) = c.get(2) else {
-        return None;
-    };
+    let repo = c.get(2)?;
     let mut repo = repo.as_str();
 
-    let Some(m) = c.get(0) else {
-        return None;
-    };
+    let m = c.get(0)?;
     if m.len() == url.len() || url.as_bytes()[m.len()] != b'/' {
         if let Some(r) = repo.strip_suffix(".git") {
             repo = r;

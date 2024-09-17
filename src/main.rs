@@ -3,7 +3,7 @@ use gh2::cli::{Cli, ConfigSubCmd};
 use gh2::cmd;
 use gh2::config;
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let gh2_config = config::read_config();
     // dbg!(&gh2_config);
 
@@ -52,15 +52,18 @@ fn main() {
         }
 
         Cli::ConfigSubCmd(subcmd) => match subcmd {
-            ConfigSubCmd::List => {}
+            ConfigSubCmd::List => Ok(()),
             ConfigSubCmd::Get { key } => {
                 dbg!(key);
+                Ok(())
             }
             ConfigSubCmd::Set { key, value } => {
                 dbg!(key, value);
+                Ok(())
             }
             ConfigSubCmd::Unset { key } => {
                 dbg!(key);
+                Ok(())
             }
         },
     }

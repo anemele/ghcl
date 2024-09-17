@@ -3,16 +3,13 @@ use super::req::get_releases;
 use crate::config::DownloadConfig;
 use crate::parser::parse_url;
 
-pub fn download(url: &str, config: DownloadConfig) {
+pub fn download(url: &str, config: DownloadConfig) -> anyhow::Result<()> {
     // dbg!(&config);
 
     let Some(repo) = parse_url(url) else {
-        eprintln!("Invalid url: {}", url);
-        return;
+        anyhow::bail!("Invalid url: {}", url);
     };
-    let Some(releases) = get_releases(&repo) else {
-        return;
-    };
+    let releases = get_releases(&repo)?;
 
     // dbg!(&releases);
     // for release in releases {
@@ -20,7 +17,8 @@ pub fn download(url: &str, config: DownloadConfig) {
     //     dbg!(&assets);
     // }
     let asset = &releases[0].get_asset_item_list()[0];
-    if let Some(pth) = download_asset(&repo, asset, &config.destiny.unwrap_or_default()) {
-        println!("Downloaded {}", pth.display())
-    }
+    let pth = download_asset(&repo, asset, &config.destiny.unwrap_or_default())?;
+    println!("Downloaded {}", pth.display());
+
+    Ok(())
 }
