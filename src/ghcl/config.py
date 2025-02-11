@@ -13,10 +13,13 @@ class Config(DataClassTOMLMixin):
     no_owner: bool = field(default=False)
     git_config: list[str] = field(default_factory=list)
 
+    def __post_init__(self):
+        self.destiny = self.destiny.expanduser()
+
 
 def load_config():
     if not RC_FILE_PATH.exists():
-        print(f"Config file not found at {RC_FILE_PATH}. Creating a new one.")
+        print(f"NO config file found.\nCreating a new one at {RC_FILE_PATH}.")
         config = Config()
         RC_FILE_PATH.write_text(config.to_toml())
         return config
