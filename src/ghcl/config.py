@@ -17,11 +17,13 @@ class Config(DataClassTOMLMixin):
         self.destiny = self.destiny.expanduser()
 
 
-def load_config():
+def load_config() -> Config:
     if not RC_FILE_PATH.exists():
         print(f"NO config file found.\nCreating a new one at {RC_FILE_PATH}.")
-        config = Config()
-        RC_FILE_PATH.write_text(config.to_toml())
-        return config
+        c = Config()
+        RC_FILE_PATH.write_text(c.to_toml())
+        return c
 
-    return Config.from_toml(RC_FILE_PATH.read_text())
+    c = Config.from_toml(RC_FILE_PATH.read_text())
+    c.destiny.mkdir(exist_ok=True)
+    return c

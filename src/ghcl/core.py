@@ -14,9 +14,7 @@ def clone(url: str, config: Config) -> None:
     local_dir = repo.name if config.no_owner else str(repo)
     local_dst = config.destiny / local_dir
 
-    cmd = ["git", "clone", repo_url, str(local_dst)]
-    if len(config.git_config) != 0:
-        cmd.extend(config.git_config)
+    cmd = ["git", "clone", repo_url, str(local_dst), *config.git_config]
     print(f"Running: {' '.join(cmd)}")
 
     res = subprocess.run(cmd)
